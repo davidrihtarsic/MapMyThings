@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quick Start - Leaflet</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+  </head>
+
+  <body>
+    <div id="mapid" style="width: 800; height: 800px;"></div>
+    <script>
+      // Using Leaflet API see more on:
+      // https://leafletjs.com/
+      var lat = 46.3444;
+      var lon = 14.1744;
+      var homeX = 46.37721569450477;
+      var homeY = 14.20513645417008;
+      var mymap = L.map('mapid').setView([homeX, homeY], 17);
+      
+      leafLetTutorial = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'OpenStreetMap',
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+      });
+      //note the url difference:
+      // Street | Hybrid | Satelite | Teren |
+      // lyrs=m | =s,h   |  =s      |  =p   |
+      googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+      });
+      openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      });
+      
+      //leafLetTutorial.addTo(mymap);
+      openStreetMap.addTo(mymap);
+      //googleSat.addTo(mymap);
+      // adding marks circles and polygones
+      var circle = L.circle([homeX, homeY], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 5
+      }).addTo(mymap);
+      //var Y=438884.12
+      //var X=137832.59999999998
+      // za pretvorbo uporabi :
+      // https://www.mkx.si/geoconv/
+      var Yvrtec = 46.375522;
+      var Xvrtec = 14.199629;
+      var Ydvor = 46.377320;
+      var Xdvor = 14.205122;
+      var homeY = 46.37721569450477;
+      var homeX = 14.20513645417008;
+      var marker = L.marker([Yvrtec,Xvrtec],{
+        opacity: 0.3
+      }).addTo(mymap);
+      //var gis= L.marker([Y,X], {
+        //crs: L.CRS.Earth
+        //crs: L.CRS.EPSG3395
+        //crs: L.CRS.EPSG3857 default
+        //crs: L.CRS.EPSG4326
+        //crs: L.CRS.Base
+      //}).addTo(mymap);
+      var polygon = L.polygon([
+        [51.509, -0.08],
+        [51.503, -0.06],
+        [51.51, -0.047]],{
+          //crs: L.CRS.EPSG4326
+        }).addTo(mymap);
+    </script>
+  </body>
+</html>

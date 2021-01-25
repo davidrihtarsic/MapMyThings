@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mobile tutorial - Leaflet</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <style>html, body { height: 100%; margin: 0; } #map { width: 600px; height: 400px; } </style>
+    <style>body { padding: 0; margin: 0; } #map { height: 100%; width: 100vw; }</style>
+  </head>
+  <body>
+    <button onclick="setOpenStreetMap()">OpenStreetMap</button>
+    <button onclick="setGoogleMaps()">Google Maps</button>
+    <div id='map'style="height: 100%"></div>
+    <script>
+      function removeAllMaps(){
+        leafLetMap.remove();
+        googleSat.remove()
+        openStreetMap.remove();
+      }
+      function setOpenStreetMap(){
+        removeAllMaps();
+        openStreetMap.addTo(map);
+      }
+      function setGoogleMaps(){
+        removeAllMaps();
+        googleSat.addTo(map);
+      }
+      var map = L.map('map').fitWorld();
+
+      leafLetMap = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'OpenStreetMap',
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+      });
+
+      openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        opacity: 1.0
+      });
+      // Street | Hybrid | Satelite | Teren |
+      // lyrs=m | =s,h   |  =s      |  =p   | tale parameter↴
+      googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+      });
+      
+      //leafLetMap.addTo(map);
+      googleSat.addTo(map);
+      //openStreetMap.addTo(map);
+      //naše parcele
+      var kr_polje = L.polygon([
+        [46.3769166666667, 14.2100194444444],
+        [46.3777277777778, 14.2108694444444],
+        [46.3775750000000, 14.2112916666667],
+        [46.3778750000000, 14.2116472222222],
+        [46.3782166666667, 14.2122055555556],
+        [46.3784694444445, 14.2124416666667],
+        [46.3782472222222, 14.2130666666667],
+        [46.3781500000000, 14.2134388888889],
+        [46.3770805555556, 14.2117416666667],
+        [46.3772083333333, 14.2111805555556],
+        [46.3771388888889, 14.2105805555556],
+        [46.3771333333333, 14.2105694444444]
+      ])
+        .addTo(map)
+        .bindPopup("Kralov pole");
+      
+      var krpinska_njiva = L.polygon([
+        [46.3803694444445, 14.2034138888889],
+        [46.3801888888889, 14.2034166666667],
+        [46.3798472222222, 14.2016888888889],
+        [46.3800388888889, 14.2017277777778]
+      ])
+        .addTo(map)
+        .bindPopup("Krpinjska njiva");
+
+      var mrese = L.polygon([
+        [46.3900250000000, 14.2304472222222],
+        [46.3902111111111, 14.2290805555556],
+        [46.3924388888889, 14.2303916666667],
+        [46.3921000000000, 14.2304083333333],
+        [46.3914861111111, 14.2307277777778],
+        [46.3912944444444, 14.2309083333333],
+        [46.3912805555556, 14.2309583333333]
+      ],{
+        color: 'green'
+      })
+        .addTo(map)
+        .bindPopup("Mreše");
+      
+      function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+        L.marker(e.latlng).addTo(map)
+          .bindPopup("You are within " + radius + " meters from this point").openPopup();
+        L.circle(e.latlng, radius).addTo(map);
+      }
+
+      function onLocationError(e) {
+        alert(e.message);
+      }
+
+      map.on('locationfound', onLocationFound);
+      map.on('locationerror', onLocationError);
+      map.locate({setView: true, maxZoom: 16});
+    </script>
+  </body>
+</html>
