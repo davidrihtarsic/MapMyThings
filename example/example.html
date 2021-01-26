@@ -8,59 +8,53 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-      }
-      #map {
-        height: 67%;
-      }
-      #status{
-        height: 33%;
-      }
-    </style>
   </head>
   <body>
 
     <div id='map'></div>
     <ul id="status" class="progressing">
-      <li>Find accurate position … (Desired accuracy: 20)</li>
+      <li id=stat_latitude>Latitude :</li>
+      <li id=stat_accuracy>Accuracy :</li>
+      <li id=stat_headingT>Heading  :</li>
+      <li id=stat_curSpeed>Speed    :</li>
     </ul>
 
     <script>
-      var homeX = 46.37721569450477;
-      var homeY = 14.20513645417008;
+      var home = [46.3772, 14.2051]
       var map = L.map('map', {
-        center: [homeX, homeY],
+        center: home,
         zoom: 13,
         enableHighAccuracy: true
       });
-      var me = L.marker([homeY,homeX]).addTo(map);
-      var me_acc = L.circle([homeY,homeX], 1).addTo(map);
+      var me = L.marker(home).addTo(map);
+      var me_acc = L.circle(home, 1).addTo(map);
 
-      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1
+      //L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      //  maxZoom: 18,
+      //  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+      //  'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      //  id: 'mapbox/streets-v11',
+      //  tileSize: 512,
+      //  zoomOffset: -1
+      //}).addTo(map);
+
+      openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'testing...'
       }).addTo(map);
 
       function onLocationFound(e) {
         var radius = e.accuracy / 2;
         me.setLatLng(e.latlng);
         me_acc.setLatLng(e.latlng).setRadius(radius);
-        //L.marker(e.latlng).addTo(map)
-        //  .bindPopup("You are within " + radius + " meters from this point").openPopup();
-        //L.circle(e.latlng, radius).addTo(map);
+        document.getElementById("stat_latitude").innerHTML = "Position : " + e.latlng + "°";
+        document.getElementById("stat_accuracy").innerHTML = "Accuracy : " + e.accuracy + "m";
+        document.getElementById("stat_headingT").innerHTML = "Heading  : " + e.heading + "°";
+        document.getElementById("stat_curSpeed").innerHTML = "Speed    : " + e.speed + "m/s";
       }
 
       function onLocationError(e) {
         alert(e.message);
       }
-
       map.on('locationfound', onLocationFound);
       map.on('locationerror', onLocationError);
 
